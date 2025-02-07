@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Eye, EyeOff, Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
@@ -13,11 +14,59 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const [credentials, setCredentials] = useState("");
   const [response, setResponse] = useState("");
   const [isRawView, setIsRawView] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async () => {
-    // TODO: Implement API call
-    console.log("Submitting prompt:", prompt);
-    setResponse("API response will be displayed here");
+    if (!prompt.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a prompt",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Get the API endpoint from the control panel
+      const endpointSelect = document.querySelector('select[value]') as HTMLSelectElement;
+      const endpointInput = document.querySelector('input[placeholder="Enter custom URL"]') as HTMLInputElement;
+      const endpoint = endpointInput?.value || endpointSelect?.value;
+
+      if (!endpoint) {
+        throw new Error("No API endpoint selected");
+      }
+
+      const response = await fetch('/api/call-llm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          endpoint,
+          securityToken: credentials || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get response from API');
+      }
+
+      const data = await response.json();
+      setResponse(data.choices?.[0]?.message?.content || JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      setResponse("Error: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -76,9 +125,12 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
             className="min-h-[100px] resize-none"
             id="main-prompt-textarea"
           />
-          <Button onClick={handleSubmit}>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={isLoading}
+          >
             <Send className="h-4 w-4 mr-2" />
-            Submit
+            {isLoading ? "Submitting..." : "Submit"}
           </Button>
         </div>
 
