@@ -38,15 +38,23 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         throw new Error("No API endpoint selected");
       }
 
-      const response = await fetch('/api/call-llm', {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (credentials) {
+        headers['Authorization'] = `Bearer ${credentials}`;
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
-          prompt,
-          endpoint,
-          securityToken: credentials || undefined,
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'You are a helpful assistant.' },
+            { role: 'user', content: prompt }
+          ],
         }),
       });
 
