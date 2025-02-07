@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,23 +37,15 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         throw new Error("No API endpoint selected");
       }
 
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-
-      if (credentials) {
-        headers['Authorization'] = `Bearer ${credentials}`;
-      }
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('http://localhost:3000/api/llm', {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: prompt }
-          ],
+          prompt,
+          endpoint,
+          credentials: credentials || undefined,
         }),
       });
 
