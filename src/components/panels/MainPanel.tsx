@@ -20,6 +20,8 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const handleCredentialsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setCredentials(newValue);
+    // Store in sessionStorage for persistence
+    sessionStorage.setItem('jwtCredentials', newValue);
     // Dispatch custom event when credentials change
     window.dispatchEvent(new CustomEvent('credentialsChanged', { detail: newValue }));
   };

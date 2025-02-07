@@ -5,7 +5,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatJWT } from "@/utils/jwtUtils";
 
 export function JWTDetailsTab() {
-  const [credentials, setCredentials] = useState('');
+  const [credentials, setCredentials] = useState(() => {
+    // Initialize from sessionStorage if available
+    return sessionStorage.getItem('jwtCredentials') || '';
+  });
 
   useEffect(() => {
     const handleCredentialsChange = (event: CustomEvent<string>) => {
