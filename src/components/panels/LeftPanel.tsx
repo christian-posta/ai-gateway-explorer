@@ -12,13 +12,7 @@ export function LeftPanel() {
 
   const handleDemoSelect = async (demo: any) => {
     setSelectedDemo(demo);
-    // Simulate demo reset command
-    console.log(`Executing: ./reset-demo.sh --for ${demo.id}`);
-    toast({
-      title: "Demo Prepared",
-      description: `Demo ${demo.id} has been successfully prepared.`,
-      duration: 3000,
-    });
+    // Removed toast notification
   };
 
   return (

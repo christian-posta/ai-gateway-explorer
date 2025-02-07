@@ -12,28 +12,29 @@ const SCRIPTS_ROOT_DIR = process.env.SCRIPTS_ROOT_DIR || path.join(__dirname, '.
 // Define allowed commands for each usecase
 const USECASE_COMMANDS = {
   '01-demo-hidecred': [
+    'echo "Hello, demo-hidecred!"',
     `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '02-demo-mngcred': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-mngcred.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '03-demo-ratelimit': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-ratelimit.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '04-demo-model-failover': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-model-failover.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '05-demo-prompt-guard': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-prompt-guard.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '06-demo-semantic-cache': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-semantic-cache.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '07-demo-rag': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-rag.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ],
   '08-traffic-shift': [
-    `${path.join(SCRIPTS_ROOT_DIR, 'demo-traffic-shift.sh')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, 'hello.sh')}`,
   ]
   // Add more usecases as needed
 };
