@@ -27,7 +27,7 @@ export function JWTDetailsTab() {
         <Label>JWT Token Details</Label>
         {decodedJWT ? (
           <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
-            <pre className="text-sm font-mono">
+            <pre className="text-sm font-mono whitespace-pre-wrap break-all">
               {JSON.stringify(decodedJWT, null, 2)}
             </pre>
           </ScrollArea>
