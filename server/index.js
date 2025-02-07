@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const usecaseRoutes = require('./routes/usecase-routes');
 
 app.use(cors());
 app.use(express.json());
@@ -42,6 +43,8 @@ app.post('/api/llm', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.use('/api', usecaseRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
