@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useEndpoint } from "@/contexts/EndpointContext";
 import { useSecurity } from "@/contexts/SecurityContext";
+import { useModel } from "@/contexts/ModelContext";
 
 export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
@@ -19,6 +20,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { useSecurityToken } = useSecurity();
+  const { selectedModel } = useModel();
 
   const handleCredentialsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -49,6 +51,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         prompt,
         endpoint: selectedEndpoint,
         credentials: useSecurityToken ? credentials : undefined,
+        model: selectedModel,
       };
 
       const response = await fetch('http://localhost:6001/api/llm', {

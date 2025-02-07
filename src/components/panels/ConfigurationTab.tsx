@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
 import { useSecurity } from "@/contexts/SecurityContext";
 import { useEndpoint } from "@/contexts/EndpointContext";
+import { useModel, MODEL_OPTIONS } from "@/contexts/ModelContext";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -18,6 +19,7 @@ const PRESET_URLS = [
 export function ConfigurationTab() {
   const { selectedEndpoint, setSelectedEndpoint } = useEndpoint();
   const { useSecurityToken, setUseSecurityToken } = useSecurity();
+  const { selectedModel, setSelectedModel } = useModel();
   const { toast } = useToast();
   const { selectedDemo } = useDemo();
   const [isDeploying, setIsDeploying] = useState(false);
@@ -78,21 +80,35 @@ export function ConfigurationTab() {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
+        <Label>Model</Label>
+        <Select value={selectedModel} onValueChange={setSelectedModel}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select model" />
+          </SelectTrigger>
+          <SelectContent>
+            {MODEL_OPTIONS.map((model) => (
+              <SelectItem key={model.id} value={model.id}>
+                {model.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
         <Label>API Endpoint</Label>
-        <div className="space-y-2">
-          <Select value={selectedEndpoint} onValueChange={setSelectedEndpoint}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select URL" />
-            </SelectTrigger>
-            <SelectContent>
-              {PRESET_URLS.map((url) => (
-                <SelectItem key={url} value={url}>
-                  {url}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={selectedEndpoint} onValueChange={setSelectedEndpoint}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select URL" />
+          </SelectTrigger>
+          <SelectContent>
+            {PRESET_URLS.map((url) => (
+              <SelectItem key={url} value={url}>
+                {url}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex items-center space-x-2">
