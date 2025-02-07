@@ -269,25 +269,28 @@ export function ControlPanel() {
   );
 
   return (
-    <div className="flex flex-col h-full">
-      <div className={`bg-enterprise-100 border-t border-enterprise-200 flex-1 ${isCollapsed ? "flex-0" : ""}`}>
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-enterprise-900">Controls</h2>
-            <Button
-              variant="ghost"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="text-enterprise-500 hover:text-enterprise-700"
-            >
-              {isCollapsed ? "Expand" : "Collapse"}
-            </Button>
-          </div>
+    <div className="h-full flex flex-col">
+      <div className="flex-grow">
+        <div className={`bg-enterprise-100 border-t border-enterprise-200 h-full`}>
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-enterprise-900">Controls</h2>
+              <Button
+                variant="ghost"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="text-enterprise-500 hover:text-enterprise-700"
+              >
+                {isCollapsed ? "Expand" : "Collapse"}
+              </Button>
+            </div>
 
-          {!isCollapsed && (
-            selectedDemo?.id === 5 ? renderGuardrailsContent() : renderDefaultContent()
-          )}
+            {!isCollapsed && (
+              selectedDemo?.id === 5 ? renderGuardrailsContent() : renderDefaultContent()
+            )}
+          </div>
         </div>
       </div>
+      {isCollapsed && <div className="flex-grow" />}
     </div>
   );
 }
