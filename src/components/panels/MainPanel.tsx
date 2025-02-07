@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Eye, EyeOff, Send } from "lucide-react";
 
-export function MainPanel() {
+export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
   const [prompt, setPrompt] = useState("");
   const [showCredentials, setShowCredentials] = useState(false);
@@ -19,7 +19,9 @@ export function MainPanel() {
   };
 
   return (
-    <div className="h-[70vh] bg-enterprise-50 p-4 flex flex-col">
+    <div className={`bg-enterprise-50 p-4 flex flex-col transition-all duration-300 ${
+      controlPanelCollapsed ? 'h-[calc(100vh-3rem)]' : 'h-[70vh]'
+    }`}>
       <div className="flex items-center space-x-4 mb-4">
         {settings.logoUrl && (
           <img

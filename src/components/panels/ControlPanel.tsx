@@ -26,7 +26,7 @@ export function ControlPanel() {
     <div
       className={`bg-enterprise-100 border-t border-enterprise-200 transition-all duration-300 ${
         isCollapsed ? "h-12" : "h-[30vh]"
-      }`}
+      } absolute bottom-0 left-0 right-0`}
     >
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
