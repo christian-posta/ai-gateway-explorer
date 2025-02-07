@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -14,7 +15,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Rocket, SendHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -67,6 +67,7 @@ export function ControlPanel() {
     };
   }, []);
 
+  // Function to decode base64url
   const base64UrlDecode = (str: string): string => {
     const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
     const pad = base64.length % 4;
@@ -82,12 +83,14 @@ export function ControlPanel() {
     }
   };
 
+  // Function to check if a string is a valid JWT token
   const isValidJWT = (token: string): boolean => {
     if (!token) return false;
     const parts = token.split('.');
     return parts.length === 3 && parts.every(part => part.length > 0);
   };
 
+  // Function to format JWT token
   const formatJWT = (token: string) => {
     if (!token || !isValidJWT(token)) return null;
 
@@ -105,6 +108,7 @@ export function ControlPanel() {
     }
   };
 
+  // Function to get security credentials from the main panel
   const getSecurityCredentials = (): string => {
     const input = document.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
     return input?.value || '';
