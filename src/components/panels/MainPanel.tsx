@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,13 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const [isRawView, setIsRawView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleCredentialsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setCredentials(newValue);
+    // Dispatch custom event when credentials change
+    window.dispatchEvent(new CustomEvent('credentialsChanged', { detail: newValue }));
+  };
 
   const handleSubmit = async () => {
     if (!prompt.trim()) {
@@ -99,7 +107,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
             type={showCredentials ? "text" : "password"}
             placeholder="Enter security credentials"
             value={credentials}
-            onChange={(e) => setCredentials(e.target.value)}
+            onChange={handleCredentialsChange}
             className="pr-10"
           />
           <Button

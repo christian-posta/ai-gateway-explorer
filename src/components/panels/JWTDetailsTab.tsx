@@ -1,16 +1,25 @@
 
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatJWT } from "@/utils/jwtUtils";
 
 export function JWTDetailsTab() {
-  const getSecurityCredentials = (): string => {
-    const input = document.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
-    return input?.value || '';
-  };
+  const [credentials, setCredentials] = useState('');
+
+  useEffect(() => {
+    const handleCredentialsChange = (event: CustomEvent<string>) => {
+      setCredentials(event.detail);
+    };
+
+    window.addEventListener('credentialsChanged', handleCredentialsChange as EventListener);
+
+    return () => {
+      window.removeEventListener('credentialsChanged', handleCredentialsChange as EventListener);
+    };
+  }, []);
 
   const renderJWTDetails = () => {
-    const credentials = getSecurityCredentials();
     const decodedJWT = formatJWT(credentials);
     
     return (
