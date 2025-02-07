@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -21,6 +23,21 @@ export function ControlPanel() {
   const [selectedUrl, setSelectedUrl] = useState(PRESET_URLS[0]);
   const [useSecurityToken, setUseSecurityToken] = useState(true);
   const [jwtToken, setJwtToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
+
+  // Function to format JWT token
+  const formatJWT = (token: string) => {
+    try {
+      const [header, payload, signature] = token.split('.');
+      return {
+        header: JSON.parse(atob(header)),
+        payload: JSON.parse(atob(payload)),
+        signature
+      };
+    } catch (e) {
+      console.error('Error parsing JWT:', e);
+      return { raw: token };
+    }
+  };
 
   return (
     <div
@@ -41,38 +58,49 @@ export function ControlPanel() {
         </div>
 
         {!isCollapsed && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>API Endpoint</Label>
-              <Select value={selectedUrl} onValueChange={setSelectedUrl}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select URL" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PRESET_URLS.map((url) => (
-                    <SelectItem key={url} value={url}>
-                      {url}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <Tabs defaultValue="general" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="jwt">JWT Details</TabsTrigger>
+            </TabsList>
 
-            <div className="space-y-2">
-              <Label>JWT Token</Label>
-              <pre className="bg-white p-2 rounded text-sm overflow-auto">
-                {jwtToken}
-              </pre>
-            </div>
+            <TabsContent value="general" className="space-y-4">
+              <div className="space-y-2">
+                <Label>API Endpoint</Label>
+                <Select value={selectedUrl} onValueChange={setSelectedUrl}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select URL" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PRESET_URLS.map((url) => (
+                      <SelectItem key={url} value={url}>
+                        {url}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={useSecurityToken}
-                onCheckedChange={setUseSecurityToken}
-              />
-              <Label>Use Security Token</Label>
-            </div>
-          </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={useSecurityToken}
+                  onCheckedChange={setUseSecurityToken}
+                />
+                <Label>Use Security Token</Label>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="jwt" className="space-y-4">
+              <div className="space-y-2">
+                <Label>JWT Token Details</Label>
+                <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
+                  <pre className="text-sm font-mono">
+                    {JSON.stringify(formatJWT(jwtToken), null, 2)}
+                  </pre>
+                </ScrollArea>
+              </div>
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     </div>
