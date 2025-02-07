@@ -1,8 +1,10 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/SettingsContext";
 import { Eye, EyeOff, Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
@@ -66,11 +68,13 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
           </Button>
         </div>
 
-        <div className="flex space-x-2">
-          <Input
+        <div className="flex flex-col space-y-2">
+          <Textarea
             placeholder="Enter your prompt"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
+            className="min-h-[100px] resize-none"
+            id="main-prompt-textarea"
           />
           <Button onClick={handleSubmit}>
             <Send className="h-4 w-4 mr-2" />

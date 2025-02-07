@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -13,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Rocket } from "lucide-react";
+import { Rocket, SendHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const PRESET_URLS = [
@@ -93,6 +92,18 @@ export function ControlPanel() {
     });
   };
 
+  const fillMainPanelPrompt = () => {
+    const textarea = document.getElementById('main-prompt-textarea') as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.value = selectedPrompt.content;
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      toast({
+        title: "Prompt Filled",
+        description: "The prompt template has been copied to the main panel.",
+      });
+    }
+  };
+
   const renderGuardrailsContent = () => (
     <Tabs defaultValue="prompts" className="space-y-4">
       <TabsList>
@@ -118,9 +129,19 @@ export function ControlPanel() {
               ))}
             </SelectContent>
           </Select>
-          <ScrollArea className="h-[120px] w-full rounded-md border p-4">
-            <pre className="text-sm">{selectedPrompt.content}</pre>
-          </ScrollArea>
+          <div className="h-[120px] w-full rounded-md border">
+            <ScrollArea className="h-full w-full rounded-md p-4">
+              <pre className="text-sm whitespace-pre-wrap">{selectedPrompt.content}</pre>
+            </ScrollArea>
+          </div>
+          <Button 
+            onClick={fillMainPanelPrompt}
+            className="w-full"
+            variant="secondary"
+          >
+            <SendHorizontal className="mr-2 h-4 w-4" />
+            Use This Template
+          </Button>
         </div>
       </TabsContent>
 
