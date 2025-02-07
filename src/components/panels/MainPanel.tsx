@@ -76,7 +76,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
 
   return (
     <div className={`bg-enterprise-50 p-4 flex flex-col transition-all duration-300 ${
-      controlPanelCollapsed ? 'h-[calc(100vh-3rem)]' : 'h-[70vh]'
+      controlPanelCollapsed ? 'h-[calc(100vh-3rem)]' : 'h-[calc(100vh-30vh)]'
     }`}>
       <div className="flex items-center space-x-4 mb-4">
         {settings.logoUrl && (

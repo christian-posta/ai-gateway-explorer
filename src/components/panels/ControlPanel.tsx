@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -7,9 +6,15 @@ import { PromptTemplatesTab } from "./PromptTemplatesTab";
 import { ConfigurationTab } from "./ConfigurationTab";
 import { JWTDetailsTab } from "./JWTDetailsTab";
 
-export function ControlPanel() {
+export function ControlPanel({ onCollapse }: { onCollapse: (collapsed: boolean) => void }) {
   const { selectedDemo } = useDemo();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleCollapse = () => {
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    onCollapse(newCollapsedState);
+  };
 
   const renderGuardrailsContent = () => (
     <Tabs defaultValue="prompts" className="space-y-4">
@@ -59,7 +64,7 @@ export function ControlPanel() {
               <h2 className="text-lg font-semibold text-enterprise-900">Controls</h2>
               <Button
                 variant="ghost"
-                onClick={() => setIsCollapsed(!isCollapsed)}
+                onClick={handleCollapse}
                 className="text-enterprise-500 hover:text-enterprise-700"
               >
                 {isCollapsed ? "Expand" : "Collapse"}

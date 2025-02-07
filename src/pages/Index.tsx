@@ -5,8 +5,11 @@ import { LeftPanel } from "@/components/panels/LeftPanel";
 import { MainPanel } from "@/components/panels/MainPanel";
 import { ControlPanel } from "@/components/panels/ControlPanel";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { useState } from "react";
 
 const Index = () => {
+  const [controlPanelCollapsed, setControlPanelCollapsed] = useState(false);
+
   return (
     <SettingsProvider>
       <DemoProvider>
@@ -15,12 +18,22 @@ const Index = () => {
             <LeftPanel />
             <div className="flex-1">
               <ResizablePanelGroup direction="vertical">
-                <ResizablePanel defaultSize={70} minSize={30}>
-                  <MainPanel />
+                <ResizablePanel 
+                  defaultSize={70} 
+                  minSize={30}
+                  className="transition-all duration-300"
+                  style={{ flex: controlPanelCollapsed ? '1 1 95%' : undefined }}
+                >
+                  <MainPanel controlPanelCollapsed={controlPanelCollapsed} />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={30} minSize={20}>
-                  <ControlPanel />
+                <ResizablePanel 
+                  defaultSize={30} 
+                  minSize={5}
+                  className="transition-all duration-300"
+                  style={{ flex: controlPanelCollapsed ? '0 0 48px' : undefined }}
+                >
+                  <ControlPanel onCollapse={setControlPanelCollapsed} />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </div>
