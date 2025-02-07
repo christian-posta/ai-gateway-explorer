@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -73,7 +72,9 @@ export function ControlPanel() {
 
   // Function to check if a string is a valid JWT token
   const isValidJWT = (token: string): boolean => {
-    return token.split('.').length === 3;
+    if (!token) return false;
+    const parts = token.split('.');
+    return parts.length === 3 && parts.every(part => part.length > 0);
   };
 
   // Function to format JWT token
@@ -92,6 +93,12 @@ export function ControlPanel() {
       console.error('Error parsing JWT:', e);
       return null;
     }
+  };
+
+  // Function to get security credentials from the main panel
+  const getSecurityCredentials = (): string => {
+    const input = document.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
+    return input?.value || '';
   };
 
   const handleDeploy = () => {
@@ -118,9 +125,28 @@ export function ControlPanel() {
     setCustomUrl(value);
   };
 
-  const getSecurityCredentials = (): string => {
-    const input = document.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
-    return input?.value || '';
+  const renderJWTDetails = () => {
+    const credentials = getSecurityCredentials();
+    console.log('Credentials:', credentials); // Debug log
+    const decodedJWT = formatJWT(credentials);
+    console.log('Decoded JWT:', decodedJWT); // Debug log
+    
+    return (
+      <div className="space-y-2">
+        <Label>JWT Token Details</Label>
+        {decodedJWT ? (
+          <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
+            <pre className="text-sm font-mono">
+              {JSON.stringify(decodedJWT, null, 2)}
+            </pre>
+          </ScrollArea>
+        ) : (
+          <div className="text-sm text-muted-foreground p-4">
+            No valid JWT token found in security credentials
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderGuardrailsContent = () => (
@@ -210,25 +236,7 @@ export function ControlPanel() {
       </TabsContent>
 
       <TabsContent value="jwt" className="space-y-4">
-        <div className="space-y-2">
-          <Label>JWT Token Details</Label>
-          {(() => {
-            const credentials = getSecurityCredentials();
-            const decodedJWT = formatJWT(credentials);
-            
-            return decodedJWT ? (
-              <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
-                <pre className="text-sm font-mono">
-                  {JSON.stringify(decodedJWT, null, 2)}
-                </pre>
-              </ScrollArea>
-            ) : (
-              <div className="text-sm text-muted-foreground p-4">
-                No valid JWT token found in security credentials
-              </div>
-            );
-          })()}
-        </div>
+        {renderJWTDetails()}
       </TabsContent>
     </Tabs>
   );
@@ -278,25 +286,7 @@ export function ControlPanel() {
       </TabsContent>
 
       <TabsContent value="jwt" className="space-y-4">
-        <div className="space-y-2">
-          <Label>JWT Token Details</Label>
-          {(() => {
-            const credentials = getSecurityCredentials();
-            const decodedJWT = formatJWT(credentials);
-            
-            return decodedJWT ? (
-              <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
-                <pre className="text-sm font-mono">
-                  {JSON.stringify(decodedJWT, null, 2)}
-                </pre>
-              </ScrollArea>
-            ) : (
-              <div className="text-sm text-muted-foreground p-4">
-                No valid JWT token found in security credentials
-              </div>
-            );
-          })()}
-        </div>
+        {renderJWTDetails()}
       </TabsContent>
     </Tabs>
   );
