@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +5,11 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { Eye, EyeOff, Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useEndpoint } from "@/contexts/EndpointContext";
 
 export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
+  const { selectedEndpoint } = useEndpoint();
   const [prompt, setPrompt] = useState("");
   const [showCredentials, setShowCredentials] = useState(false);
   const [credentials, setCredentials] = useState("");
@@ -38,12 +39,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
 
     setIsLoading(true);
     try {
-      // Get the API endpoint from the control panel
-      const endpointSelect = document.querySelector('select[value]') as HTMLSelectElement;
-      const endpointInput = document.querySelector('input[placeholder="Enter custom URL"]') as HTMLInputElement;
-      const endpoint = endpointInput?.value || endpointSelect?.value;
-
-      if (!endpoint) {
+      if (!selectedEndpoint) {
         throw new Error("No API endpoint selected");
       }
 
@@ -54,7 +50,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         },
         body: JSON.stringify({
           prompt,
-          endpoint,
+          endpoint: selectedEndpoint,
           credentials: credentials || undefined,
         }),
       });
