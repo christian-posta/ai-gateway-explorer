@@ -22,15 +22,34 @@ export function ControlPanel() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedUrl, setSelectedUrl] = useState(PRESET_URLS[0]);
   const [useSecurityToken, setUseSecurityToken] = useState(true);
-  const [jwtToken, setJwtToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
+  const [jwtToken, setJwtToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
+
+  // Function to decode base64url
+  const base64UrlDecode = (str: string): string => {
+    // Convert base64url to base64 by replacing characters
+    const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    // Add padding if needed
+    const pad = base64.length % 4;
+    const paddedBase64 = pad ? base64 + '='.repeat(4 - pad) : base64;
+    
+    try {
+      return decodeURIComponent(atob(paddedBase64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    } catch (e) {
+      console.error('Error decoding base64url:', e);
+      return str;
+    }
+  };
 
   // Function to format JWT token
   const formatJWT = (token: string) => {
     try {
       const [header, payload, signature] = token.split('.');
+      
       return {
-        header: JSON.parse(atob(header)),
-        payload: JSON.parse(atob(payload)),
+        header: JSON.parse(base64UrlDecode(header)),
+        payload: JSON.parse(base64UrlDecode(payload)),
         signature
       };
     } catch (e) {
