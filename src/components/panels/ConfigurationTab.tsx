@@ -6,6 +6,8 @@ import { Rocket } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
+import { useSecurity } from "@/contexts/SecurityContext";
+import { useEndpoint } from "@/contexts/EndpointContext";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -14,8 +16,8 @@ const PRESET_URLS = [
 ];
 
 export function ConfigurationTab() {
-  const [selectedUrl, setSelectedUrl] = useState(PRESET_URLS[0]);
-  const [useSecurityToken, setUseSecurityToken] = useState(true);
+  const { selectedEndpoint, setSelectedEndpoint } = useEndpoint();
+  const { useSecurityToken, setUseSecurityToken } = useSecurity();
   const { toast } = useToast();
   const { selectedDemo } = useDemo();
   const [isDeploying, setIsDeploying] = useState(false);
@@ -34,7 +36,7 @@ export function ConfigurationTab() {
     try {
       const usecaseId = selectedDemo.usecaseId;
       
-      const response = await fetch('http://localhost:3000/api/configure-usecase', {
+      const response = await fetch('http://localhost:6001/api/configure-usecase', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +80,7 @@ export function ConfigurationTab() {
       <div className="space-y-2">
         <Label>API Endpoint</Label>
         <div className="space-y-2">
-          <Select value={selectedUrl} onValueChange={setSelectedUrl}>
+          <Select value={selectedEndpoint} onValueChange={setSelectedEndpoint}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select URL" />
             </SelectTrigger>

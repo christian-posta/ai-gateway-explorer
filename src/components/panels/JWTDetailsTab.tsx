@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,6 +11,7 @@ export function JWTDetailsTab() {
 
   useEffect(() => {
     const handleCredentialsChange = (event: CustomEvent<string>) => {
+      console.log('Event received:', event.detail);
       setCredentials(event.detail);
     };
 
@@ -25,6 +25,9 @@ export function JWTDetailsTab() {
   }, []);
 
   const decodedJWT = formatJWT(credentials);
+
+  console.log('Current credentials:', credentials);
+  console.log('Decoded JWT:', decodedJWT);
 
   return (
     <div className="space-y-2">

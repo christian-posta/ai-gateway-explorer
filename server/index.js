@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -9,18 +8,28 @@ app.use(express.json());
 
 // Endpoint to proxy LLM requests
 app.post('/api/llm', async (req, res) => {
+  const requestDetails = {
+    timestamp: new Date().toISOString(),
+    method: 'POST',
+    endpoint: req.body.endpoint,
+    headers: {},
+    body: req.body
+  };
+
   try {
     const { prompt, endpoint, credentials } = req.body;
-
     const headers = {
       'Content-Type': 'application/json',
     };
 
     if (credentials) {
       headers['Authorization'] = `Bearer ${credentials}`;
+      requestDetails.headers['Authorization'] = `Bearer ${credentials}`;
     }
 
-    const response = await fetch(endpoint, {
+    requestDetails.headers['Content-Type'] = 'application/json';
+
+    const llmRequest = {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -30,23 +39,59 @@ app.post('/api/llm', async (req, res) => {
           { role: 'user', content: prompt }
         ],
       }),
-    });
+    };
 
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
+    const response = await fetch(endpoint, llmRequest);
+    const clonedResponse = response.clone();
+    let responseData;
+    let responseText;
+    
+    try {
+      responseData = await response.json();
+    } catch (parseError) {
+      // If JSON parsing fails, get the response as text from the clone
+      responseText = await clonedResponse.text();
     }
 
-    const data = await response.json();
-    res.json(data);
+    const responseDetails = {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers),
+      body: responseData || responseText
+    };
+
+    if (!response.ok) {
+      throw {
+        message: responseData?.error?.message || responseText || `API call failed with status: ${response.status}`,
+        request: requestDetails,
+        response: responseDetails
+      };
+    }
+
+    res.json({
+      choices: responseData?.choices || [{ message: { content: responseText } }],
+      debug: {
+        request: requestDetails,
+        response: responseDetails
+      }
+    });
   } catch (error) {
     console.error('Error in LLM proxy:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message || 'Internal Server Error',
+      debug: {
+        request: requestDetails,
+        response: error.response || null
+      }
+    });
   }
 });
 
 app.use('/api', usecaseRoutes);
 
+// Use the PORT environment variable or default to 3000
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

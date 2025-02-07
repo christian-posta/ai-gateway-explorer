@@ -6,6 +6,7 @@ import { Eye, EyeOff, Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useEndpoint } from "@/contexts/EndpointContext";
+import { useSecurity } from "@/contexts/SecurityContext";
 
 export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
   const { settings } = useSettings();
@@ -17,6 +18,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const [isRawView, setIsRawView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { useSecurityToken } = useSecurity();
 
   const handleCredentialsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -43,24 +45,38 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         throw new Error("No API endpoint selected");
       }
 
-      const response = await fetch('http://localhost:3000/api/llm', {
+      const requestBody = {
+        prompt,
+        endpoint: selectedEndpoint,
+        credentials: useSecurityToken ? credentials : undefined,
+      };
+
+      const response = await fetch('http://localhost:6001/api/llm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          prompt,
-          endpoint: selectedEndpoint,
-          credentials: credentials || undefined,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response from API');
+      const data = await response.json();
+
+      if (data.error) {
+        const errorResponse = JSON.stringify({
+          error: data.error,
+          debug: data.debug
+        }, null, 2);
+        setResponse(errorResponse);
+        throw new Error(data.error);
       }
 
-      const data = await response.json();
-      setResponse(data.choices?.[0]?.message?.content || JSON.stringify(data, null, 2));
+      if (isRawView) {
+        // Show the complete debug information in raw view
+        setResponse(JSON.stringify(data, null, 2));
+      } else {
+        // Show only the LLM response content in formatted view
+        setResponse(data.choices?.[0]?.message?.content || 'No response content');
+      }
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -68,7 +84,6 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
         description: error.message,
         variant: "destructive",
       });
-      setResponse("Error: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -93,9 +108,21 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
 
       <div className="flex-grow overflow-auto bg-white rounded-lg p-4 mb-4 border border-enterprise-200">
         {isRawView ? (
-          <pre className="text-sm">{response}</pre>
+          <pre className="text-sm font-mono break-words whitespace-pre-wrap overflow-wrap-anywhere">
+            {response}
+          </pre>
         ) : (
-          <div className="prose">{response}</div>
+          <div className="prose max-w-none">
+            {response.startsWith('Error:') ? (
+              <div className="text-red-500 break-words whitespace-pre-wrap overflow-wrap-anywhere">
+                {response}
+              </div>
+            ) : (
+              <div className="break-words whitespace-pre-wrap overflow-wrap-anywhere">
+                {response}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
