@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -14,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Rocket, SendHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -48,6 +50,7 @@ export function ControlPanel() {
   const { selectedDemo } = useDemo();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedUrl, setSelectedUrl] = useState(PRESET_URLS[0]);
+  const [customUrl, setCustomUrl] = useState("");
   const [useSecurityToken, setUseSecurityToken] = useState(true);
   const [selectedPrompt, setSelectedPrompt] = useState(PROMPT_TEMPLATES[0]);
   const { toast } = useToast();
@@ -104,6 +107,11 @@ export function ControlPanel() {
     }
   };
 
+  const handleUrlChange = (value: string) => {
+    setSelectedUrl(value);
+    setCustomUrl(value);
+  };
+
   const renderGuardrailsContent = () => (
     <Tabs defaultValue="prompts" className="space-y-4">
       <TabsList>
@@ -148,18 +156,29 @@ export function ControlPanel() {
       <TabsContent value="config" className="space-y-4">
         <div className="space-y-2">
           <Label>API Endpoint</Label>
-          <Select value={selectedUrl} onValueChange={setSelectedUrl}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select URL" />
-            </SelectTrigger>
-            <SelectContent>
-              {PRESET_URLS.map((url) => (
-                <SelectItem key={url} value={url}>
-                  {url}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <Select value={selectedUrl} onValueChange={handleUrlChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select URL" />
+              </SelectTrigger>
+              <SelectContent>
+                {PRESET_URLS.map((url) => (
+                  <SelectItem key={url} value={url}>
+                    {url}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              type="text"
+              placeholder="Enter custom URL"
+              value={customUrl}
+              onChange={(e) => {
+                setCustomUrl(e.target.value);
+                setSelectedUrl(e.target.value);
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -202,18 +221,29 @@ export function ControlPanel() {
       <TabsContent value="general" className="space-y-4">
         <div className="space-y-2">
           <Label>API Endpoint</Label>
-          <Select value={selectedUrl} onValueChange={setSelectedUrl}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select URL" />
-            </SelectTrigger>
-            <SelectContent>
-              {PRESET_URLS.map((url) => (
-                <SelectItem key={url} value={url}>
-                  {url}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <Select value={selectedUrl} onValueChange={handleUrlChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select URL" />
+              </SelectTrigger>
+              <SelectContent>
+                {PRESET_URLS.map((url) => (
+                  <SelectItem key={url} value={url}>
+                    {url}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              type="text"
+              placeholder="Enter custom URL"
+              value={customUrl}
+              onChange={(e) => {
+                setCustomUrl(e.target.value);
+                setSelectedUrl(e.target.value);
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex items-center space-x-2">
