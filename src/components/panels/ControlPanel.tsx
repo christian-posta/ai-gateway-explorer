@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
@@ -207,15 +206,6 @@ export function ControlPanel() {
                 ))}
               </SelectContent>
             </Select>
-            <Input
-              type="text"
-              placeholder="Enter custom URL"
-              value={customUrl}
-              onChange={(e) => {
-                setCustomUrl(e.target.value);
-                setSelectedUrl(e.target.value);
-              }}
-            />
           </div>
         </div>
 
