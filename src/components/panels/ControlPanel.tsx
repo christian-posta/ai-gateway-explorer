@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
 import {
@@ -14,7 +15,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Rocket, SendHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
 
 const PRESET_URLS = [
   "https://api.openai.com/v1/chat/completions",
@@ -52,7 +52,20 @@ export function ControlPanel() {
   const [customUrl, setCustomUrl] = useState("");
   const [useSecurityToken, setUseSecurityToken] = useState(true);
   const [selectedPrompt, setSelectedPrompt] = useState(PROMPT_TEMPLATES[0]);
+  const [currentJWT, setCurrentJWT] = useState("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleCredentialsChange = (event: CustomEvent<string>) => {
+      setCurrentJWT(event.detail);
+    };
+
+    window.addEventListener('credentialsChanged', handleCredentialsChange as EventListener);
+
+    return () => {
+      window.removeEventListener('credentialsChanged', handleCredentialsChange as EventListener);
+    };
+  }, []);
 
   // Function to decode base64url
   const base64UrlDecode = (str: string): string => {
@@ -126,10 +139,7 @@ export function ControlPanel() {
   };
 
   const renderJWTDetails = () => {
-    const credentials = getSecurityCredentials();
-    console.log('Credentials:', credentials); // Debug log
-    const decodedJWT = formatJWT(credentials);
-    console.log('Decoded JWT:', decodedJWT); // Debug log
+    const decodedJWT = formatJWT(currentJWT);
     
     return (
       <div className="space-y-2">
