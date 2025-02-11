@@ -11,9 +11,10 @@ import { useEndpoint } from "@/contexts/EndpointContext";
 import { useModel, MODEL_OPTIONS } from "@/contexts/ModelContext";
 
 const PRESET_URLS = [
+  "http://localhost:8080/openai",
   "https://api.openai.com/v1/chat/completions",
   "http://localhost:8080/v1/chat/completions",
-  "http://localhost:8080/openai",
+  "http://localhost:8080/anthropic",
 ];
 
 export function ConfigurationTab() {
