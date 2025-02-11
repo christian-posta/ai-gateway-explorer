@@ -9,10 +9,15 @@ import { useEndpoint } from "@/contexts/EndpointContext";
 import { useSecurity } from "@/contexts/SecurityContext";
 import { useModel } from "@/contexts/ModelContext";
 
-export function MainPanel({ controlPanelCollapsed = false }: { controlPanelCollapsed?: boolean }) {
+interface MainPanelProps {
+  controlPanelCollapsed?: boolean;
+  prompt: string;
+  setPrompt: (prompt: string) => void;
+}
+
+export function MainPanel({ controlPanelCollapsed = false, prompt, setPrompt }: MainPanelProps) {
   const { settings } = useSettings();
   const { selectedEndpoint } = useEndpoint();
-  const [prompt, setPrompt] = useState("");
   const [showCredentials, setShowCredentials] = useState(false);
   const [credentials, setCredentials] = useState("");
   const [response, setResponse] = useState("");

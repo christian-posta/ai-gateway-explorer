@@ -27,10 +27,22 @@ const USECASE_COMMANDS = {
     `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 4')}`,
     `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 04-demo-model-failover.sh --run 0 -y')}`,
   ],
-  '05-demo-prompt-guard': [
+  '05-demo-prompt-guard-reject': [
     `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 5')}`,
     `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 05-demo-prompt-guard.sh --run 0 -y')}`,
   ],
+  '05-demo-prompt-guard-mask': [
+    `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 5')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 05-demo-prompt-guard.sh --run 0 -y')}`,
+  ],  
+  '05-demo-prompt-guard-moderation': [
+    `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 5')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 05-demo-prompt-guard.sh --run 0 -y')}`,
+  ],  
+  '05-demo-prompt-guard-custom': [
+    `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 5')}`,
+    `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 05-demo-prompt-guard.sh --run 0 -y')}`,
+  ],    
   '06-demo-semantic-cache': [
     `${path.join(SCRIPTS_ROOT_DIR, './reset-demo.sh --for 6')}`,
     `${path.join(SCRIPTS_ROOT_DIR, './kubectl_finder.py 06-demo-semantic-cache.sh --run 0 -y')}`,

@@ -6,7 +6,12 @@ import { PromptTemplatesTab } from "./PromptTemplatesTab";
 import { ConfigurationTab } from "./ConfigurationTab";
 import { JWTDetailsTab } from "./JWTDetailsTab";
 
-export function ControlPanel({ onCollapse }: { onCollapse: (collapsed: boolean) => void }) {
+interface ControlPanelProps {
+  onCollapse: (collapsed: boolean) => void;
+  onTemplateSelect?: (content: string) => void;
+}
+
+export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps) {
   const { selectedDemo } = useDemo();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -25,7 +30,7 @@ export function ControlPanel({ onCollapse }: { onCollapse: (collapsed: boolean) 
       </TabsList>
 
       <TabsContent value="prompts">
-        <PromptTemplatesTab />
+        <PromptTemplatesTab onTemplateSelect={onTemplateSelect} />
       </TabsContent>
 
       <TabsContent value="config">

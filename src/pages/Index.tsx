@@ -9,6 +9,11 @@ import { useState } from "react";
 
 const Index = () => {
   const [controlPanelCollapsed, setControlPanelCollapsed] = useState(false);
+  const [prompt, setPrompt] = useState("");
+
+  const handleTemplateSelect = (content: string) => {
+    setPrompt(content);
+  };
 
   return (
     <SettingsProvider>
@@ -24,7 +29,11 @@ const Index = () => {
                   className="transition-all duration-300"
                   style={{ flex: controlPanelCollapsed ? '1 1 95%' : undefined }}
                 >
-                  <MainPanel controlPanelCollapsed={controlPanelCollapsed} />
+                  <MainPanel 
+                    controlPanelCollapsed={controlPanelCollapsed}
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                  />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
                 <ResizablePanel 
@@ -33,7 +42,10 @@ const Index = () => {
                   className="transition-all duration-300"
                   style={{ flex: controlPanelCollapsed ? '0 0 48px' : undefined }}
                 >
-                  <ControlPanel onCollapse={setControlPanelCollapsed} />
+                  <ControlPanel 
+                    onCollapse={setControlPanelCollapsed}
+                    onTemplateSelect={handleTemplateSelect}
+                  />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </div>

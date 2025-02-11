@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -30,15 +29,17 @@ const PROMPT_TEMPLATES = [
   },
 ];
 
-export function PromptTemplatesTab() {
+interface PromptTemplatesTabProps {
+  onTemplateSelect?: (content: string) => void;
+}
+
+export function PromptTemplatesTab({ onTemplateSelect }: PromptTemplatesTabProps) {
   const [selectedPrompt, setSelectedPrompt] = useState(PROMPT_TEMPLATES[0]);
   const { toast } = useToast();
 
   const fillMainPanelPrompt = () => {
-    const textarea = document.getElementById('main-prompt-textarea') as HTMLTextAreaElement;
-    if (textarea) {
-      textarea.value = selectedPrompt.content;
-      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    if (onTemplateSelect) {
+      onTemplateSelect(selectedPrompt.content);
       toast({
         title: "Prompt Filled",
         description: "The prompt template has been copied to the main panel.",
