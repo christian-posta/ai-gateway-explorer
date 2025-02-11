@@ -81,7 +81,12 @@ app.post('/api/llm', async (req, res) => {
       error: error.message || 'Internal Server Error',
       debug: {
         request: requestDetails,
-        response: error.response || null
+        response: {
+          status: error.response?.status || null,
+          statusText: error.response?.statusText || null,
+          headers: error.response ? Object.fromEntries(error.response.headers) : null,
+          body: error.response ? await error.response.text() : null
+        }
       }
     });
   }

@@ -16,6 +16,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
   const [showCredentials, setShowCredentials] = useState(false);
   const [credentials, setCredentials] = useState("");
   const [response, setResponse] = useState("");
+  const [rawResponse, setRawResponse] = useState("");
   const [isRawView, setIsRawView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -70,16 +71,13 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
           debug: data.debug
         }, null, 2);
         setResponse(errorResponse);
+        setRawResponse(errorResponse);
         throw new Error(data.error);
       }
 
-      if (isRawView) {
-        // Show the complete debug information in raw view
-        setResponse(JSON.stringify(data, null, 2));
-      } else {
-        // Show only the LLM response content in formatted view
-        setResponse(data.choices?.[0]?.message?.content || 'No response content');
-      }
+      setResponse(data.choices?.[0]?.message?.content || 'No response content');
+      setRawResponse(JSON.stringify(data, null, 2));
+
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -112,7 +110,7 @@ export function MainPanel({ controlPanelCollapsed = false }: { controlPanelColla
       <div className="flex-grow overflow-auto bg-white rounded-lg p-4 mb-4 border border-enterprise-200">
         {isRawView ? (
           <pre className="text-sm font-mono break-words whitespace-pre-wrap overflow-wrap-anywhere">
-            {response}
+            {rawResponse}
           </pre>
         ) : (
           <div className="prose max-w-none">

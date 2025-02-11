@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatJWT } from "@/utils/jwtUtils";
+import { useSecurity } from "@/contexts/SecurityContext";
 
 export function JWTDetailsTab() {
+  const { useSecurityToken } = useSecurity();
   const [credentials, setCredentials] = useState(() => {
     // Initialize from sessionStorage if available
     return sessionStorage.getItem('jwtCredentials') || '';
@@ -32,7 +34,7 @@ export function JWTDetailsTab() {
   return (
     <div className="space-y-2">
       <Label>JWT Token Details</Label>
-      {decodedJWT ? (
+      {useSecurityToken && credentials && decodedJWT ? (
         <ScrollArea className="h-[15vh] w-full rounded-md border p-4">
           <pre className="text-sm font-mono break-words whitespace-pre-wrap overflow-wrap-anywhere">
             {JSON.stringify(decodedJWT, null, 2)}
