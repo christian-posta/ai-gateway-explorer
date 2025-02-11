@@ -15,11 +15,18 @@ interface ControlPanelProps {
 export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps) {
   const { selectedDemo } = useDemo();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [selectedTemplateType, setSelectedTemplateType] = useState("reject");
+  const [selectedPromptId, setSelectedPromptId] = useState("1");
 
   const handleCollapse = () => {
     const newCollapsedState = !isCollapsed;
     setIsCollapsed(newCollapsedState);
     onCollapse(newCollapsedState);
+  };
+
+  const handleTemplateTypeChange = (type: string, promptId: string) => {
+    setSelectedTemplateType(type);
+    setSelectedPromptId(promptId);
   };
 
   const renderGuardrailsContent = () => (
@@ -31,11 +38,15 @@ export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps
       </TabsList>
 
       <TabsContent value="prompts">
-        <PromptTemplatesTab onTemplateSelect={onTemplateSelect} />
+        <PromptTemplatesTab 
+          onTemplateSelect={onTemplateSelect}
+          onTemplateTypeChange={handleTemplateTypeChange}
+          selectedPromptId={selectedPromptId}
+        />
       </TabsContent>
 
       <TabsContent value="config">
-        <ConfigurationTab />
+        <ConfigurationTab selectedTemplateType={selectedTemplateType} />
       </TabsContent>
 
       <TabsContent value="jwt">

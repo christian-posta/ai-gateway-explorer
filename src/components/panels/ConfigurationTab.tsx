@@ -17,13 +17,33 @@ const PRESET_URLS = [
   "http://localhost:8080/anthropic",
 ];
 
-export function ConfigurationTab() {
+interface ConfigurationTabProps {
+  selectedTemplateType?: string;
+}
+
+export function ConfigurationTab({ selectedTemplateType }: ConfigurationTabProps) {
   const { selectedEndpoint, setSelectedEndpoint } = useEndpoint();
   const { useSecurityToken, setUseSecurityToken } = useSecurity();
   const { selectedModel, setSelectedModel } = useModel();
   const { toast } = useToast();
   const { selectedDemo } = useDemo();
   const [isDeploying, setIsDeploying] = useState(false);
+
+  const getGuardrailsUsecaseId = (templateType: string) => {
+    const baseId = "05-demo-prompt-guard";
+    switch (templateType) {
+      case "reject":
+        return `${baseId}-reject`;
+      case "mask":
+        return `${baseId}-mask`;
+      case "moderation":
+        return `${baseId}-moderation`;
+      case "custom":
+        return `${baseId}-custom`;
+      default:
+        return `${baseId}-reject`;
+    }
+  };
 
   const handleDeploy = async () => {
     if (!selectedDemo) {
@@ -37,7 +57,9 @@ export function ConfigurationTab() {
 
     setIsDeploying(true);
     try {
-      const usecaseId = selectedDemo.usecaseId;
+      const usecaseId = selectedDemo.id === 5 && selectedTemplateType
+        ? getGuardrailsUsecaseId(selectedTemplateType)
+        : selectedDemo.usecaseId;
       
       const response = await fetch(`${API_BASE_URL}/api/configure-usecase`, {
         method: 'POST',

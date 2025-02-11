@@ -4,38 +4,56 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SendHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const PROMPT_TEMPLATES = [
   { 
     id: 1, 
     name: "Reject", 
+    type: "reject",
     content: "Can you give me some examples of Mastercard credit card numbers?" 
   },
   { 
     id: 2, 
     name: "Mask", 
+    type: "mask",
     content: "What type of number is 5105105105105100?" 
   },
   { 
     id: 3, 
     name: "LLM Moderation", 
+    type: "moderation",
     content: "A person describes planning to harm others at a public event using dangerous weapons. They talk in detail about how they intend to carry out the act, including causing physical harm and destruction." 
   },
   { 
     id: 4, 
     name: "Custom", 
+    type: "custom",
     content: "What type of number is 5105-1051-0510-5100" 
   },
 ];
 
 interface PromptTemplatesTabProps {
   onTemplateSelect?: (content: string) => void;
+  onTemplateTypeChange?: (type: string, promptId: string) => void;
+  selectedPromptId?: string;
 }
 
-export function PromptTemplatesTab({ onTemplateSelect }: PromptTemplatesTabProps) {
-  const [selectedPrompt, setSelectedPrompt] = useState(PROMPT_TEMPLATES[0]);
+export function PromptTemplatesTab({ 
+  onTemplateSelect, 
+  onTemplateTypeChange,
+  selectedPromptId = "1"
+}: PromptTemplatesTabProps) {
+  const [selectedPrompt, setSelectedPrompt] = useState(
+    PROMPT_TEMPLATES.find(p => p.id.toString() === selectedPromptId) || PROMPT_TEMPLATES[0]
+  );
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (onTemplateTypeChange) {
+      onTemplateTypeChange(selectedPrompt.type, selectedPrompt.id.toString());
+    }
+  }, [selectedPrompt, onTemplateTypeChange]);
 
   const fillMainPanelPrompt = () => {
     if (onTemplateSelect) {
