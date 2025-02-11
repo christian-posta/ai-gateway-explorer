@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useDemo } from "@/contexts/DemoContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PromptTemplatesTab } from "./PromptTemplatesTab";
+import { RAGPromptTemplatesTab } from "./RAGPromptTemplatesTab";
 import { ConfigurationTab } from "./ConfigurationTab";
 import { JWTDetailsTab } from "./JWTDetailsTab";
 
@@ -43,14 +44,19 @@ export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps
     </Tabs>
   );
 
-  const renderDefaultContent = () => (
-    <Tabs defaultValue="general" className="space-y-4">
+  const renderRAGContent = () => (
+    <Tabs defaultValue="rag-prompts" className="space-y-4">
       <TabsList>
-        <TabsTrigger value="general">General</TabsTrigger>
+        <TabsTrigger value="rag-prompts">RAG Prompt Templates</TabsTrigger>
+        <TabsTrigger value="config">Configuration</TabsTrigger>
         <TabsTrigger value="jwt">JWT Details</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="general">
+      <TabsContent value="rag-prompts">
+        <RAGPromptTemplatesTab onTemplateSelect={onTemplateSelect} />
+      </TabsContent>
+
+      <TabsContent value="config">
         <ConfigurationTab />
       </TabsContent>
 
@@ -59,6 +65,29 @@ export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps
       </TabsContent>
     </Tabs>
   );
+
+  const renderDefaultContent = () => (
+    <Tabs defaultValue="config" className="space-y-4">
+      <TabsList>
+        <TabsTrigger value="config">Configuration</TabsTrigger>
+        <TabsTrigger value="jwt">JWT Details</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="config">
+        <ConfigurationTab />
+      </TabsContent>
+
+      <TabsContent value="jwt">
+        <JWTDetailsTab />
+      </TabsContent>
+    </Tabs>
+  );
+
+  const getContent = () => {
+    if (selectedDemo?.id === 5) return renderGuardrailsContent();
+    if (selectedDemo?.id === 7) return renderRAGContent(); // RAG demo ID is 7
+    return renderDefaultContent();
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -76,9 +105,7 @@ export function ControlPanel({ onCollapse, onTemplateSelect }: ControlPanelProps
               </Button>
             </div>
 
-            {!isCollapsed && (
-              selectedDemo?.id === 5 ? renderGuardrailsContent() : renderDefaultContent()
-            )}
+            {!isCollapsed && getContent()}
           </div>
         </div>
       </div>
