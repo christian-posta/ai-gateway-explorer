@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEndpoint } from "@/contexts/EndpointContext";
 import { useSecurity } from "@/contexts/SecurityContext";
 import { useModel } from "@/contexts/ModelContext";
+import { API_BASE_URL } from "@/config";
 
 interface MainPanelProps {
   controlPanelCollapsed?: boolean;
@@ -60,7 +61,9 @@ export function MainPanel({ controlPanelCollapsed = false, prompt, setPrompt }: 
         model: selectedModel,
       };
 
-      const response = await fetch('http://localhost:6001/api/llm', {
+      const url = `${API_BASE_URL}/api/llm`;
+      console.log('Fetching URL:', url);
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

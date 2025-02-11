@@ -8,7 +8,7 @@ interface EndpointContextType {
 const EndpointContext = createContext<EndpointContextType | undefined>(undefined);
 
 export function EndpointProvider({ children }: { children: React.ReactNode }) {
-  const [selectedEndpoint, setSelectedEndpoint] = useState("https://api.openai.com/v1/chat/completions");
+  const [selectedEndpoint, setSelectedEndpoint] = useState("http://localhost:8080/openai");
 
   return (
     <EndpointContext.Provider value={{ selectedEndpoint, setSelectedEndpoint }}>
