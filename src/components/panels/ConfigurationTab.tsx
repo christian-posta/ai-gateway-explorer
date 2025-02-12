@@ -12,9 +12,9 @@ import { useModel, MODEL_OPTIONS } from "@/contexts/ModelContext";
 import { API_BASE_URL } from "@/config";
 
 const PRESET_URLS = [
-  "http://localhost:8080/openai",
+  "http://your.ai-gateway.com:8080/openai",
   "https://api.openai.com/v1/chat/completions",
-  "http://localhost:8080/anthropic",
+  "http://your.ai-gateway.com:8080/anthropic",
 ];
 
 interface ConfigurationTabProps {
