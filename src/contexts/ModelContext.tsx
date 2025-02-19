@@ -6,6 +6,7 @@ export const MODEL_OPTIONS = [
   { id: "gpt-4o-mini", name: "GPT-4 Optimized Mini" },
   { id: "gpt-4o", name: "GPT-4 Optimized" },
   { id: "gpt-4.0-turbo", name: "GPT-4 Turbo" },
+  { id: "meta/llama-3.1-8b-instruct", name: "Llama 3.1 8B Instruct" },
 ];
 
 interface ModelContextType {
