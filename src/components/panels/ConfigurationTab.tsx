@@ -13,6 +13,7 @@ import { API_BASE_URL } from "@/config";
 
 const PRESET_URLS = [
   "http://your.ai-gateway.com:8080/openai",
+  "https://your.ai-gateway.com/v1/chat/completions",
   "https://api.openai.com/v1/chat/completions",
   "http://your.ai-gateway.com:8080/anthropic",
 ];
